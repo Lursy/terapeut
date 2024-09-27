@@ -7,55 +7,54 @@ import React, { useEffect, useState } from "react";
 
 
 export default function Chat() {
-  let [chat, setChat] = useState([] as {role: string, message: string}[]);
+  let [chat, setChat] = useState([] as { role: string, content: string }[]);
 
-  useEffect(() => {
-    let send = document.getElementById("send");
+  const send = async () => {
+    let message: any = document.getElementById("message");
 
-    if(!send) return;
-
-    send.onclick = async () =>  {
-      let message: any = document.getElementById("message");
-
-      if (!message) return;
-
-      let messageContext = {
-        "role": "user",
-        "message": message.value
-      }
-
-      setChat((prevChannels: any) => {
-        if (prevChannels.includes(messageContext)) return prevChannels;
-
-        return [...prevChannels, messageContext]
-      });
-
-      console.log(chat);
-
-      let response = await fetch("/api", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chat)
-      })
-
-      let data = await response.json();
-
-      console.log(data, message.value)
-
-      messageContext = {
-        role: "assistent",
-        message: data.message
-      }
-
-      setChat((prevChannels: any) => {
-        if (prevChannels.includes(messageContext)) return prevChannels;
-
-        return [...prevChannels, messageContext]
-      });
+    if (!message) return;
+    
+    let text = message.value
+    
+    let templateMessage = {
+      role: "user",
+      content: text
     }
-  }, []);
+    
+    setChat((prevChannels: any) => {
+      if (prevChannels.includes(templateMessage)) return prevChannels;
+      
+      return [...prevChannels, templateMessage]
+    });
+    
+    message.value = "";
+    let messageContext = chat;
+
+    messageContext.push(templateMessage)
+
+    let response = await fetch("/api", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(messageContext)
+    })
+
+    let data = await response.json();
+
+    console.log(data, message.value)
+
+    let responseMessage = {
+      role: "assistant",
+      content: data.message
+    }
+
+    setChat((prevChannels: any) => {
+      if (prevChannels.includes(responseMessage)) return prevChannels;
+
+      return [...prevChannels, responseMessage]
+    });
+  }
 
   return (
     <div className="flex flex-col min-h-screen min-w-screen p-4 w-full h-auto">
@@ -96,15 +95,15 @@ export default function Chat() {
           </div>
           <div className="flex h-auto bg-gray-600 w-full m-4">
             <div className="flex flex-col flex-grow justify-between items-center h-full p-2">
-              <div className="flex-grow overflow-y-scroll w-full">
+              <div className="flex-grow overflow-y-scroll w-full h-2">
                 {
-                  chat.map((messages: {role: string, message: string}, index: any) => (
-                    <div>
+                  chat.map((messages: { role: string, content: string }, index: any) => (
+                    <div key={index}>
                       {
-                        messages.role == "user"?(
-                          <User>{messages.message}</User>
-                        ):(
-                          <Bot>{messages.message}</Bot>
+                        messages.role == "user" ? (
+                          <User>{messages.content}</User>
+                        ) : (
+                          <Bot>{messages.content}</Bot>
                         )
                       }
                     </div>
@@ -112,8 +111,8 @@ export default function Chat() {
                 }
               </div>
               <div className="flex w-full flex-row justify-center m-2">
-                <input type="text" className="w-64 text-black pl-2 pr-2" id="message" />
-                <button className="ml-2" id="send">Enviar</button>
+                <input type="text" className="w-64 text-black pl-2 pr-2" id="message" onKeyDown={(e) => { if (e.key == "Enter") send()}} />
+                <button className="ml-2" id="send" onClick={send}>Enviar</button>
               </div>
             </div>
           </div>

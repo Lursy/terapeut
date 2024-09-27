@@ -8,7 +8,6 @@ export const MenuToggle = () => {
             let drop = document.getElementById('navbar-dropdown');
             let button = document.getElementById('buttonNav');
             let name = (event.target as any).tagName;
-            console.log(name);
     
             if (drop && !drop.classList.contains("hidden")) {
                 if (event.target != drop && name != "BUTTON" && name != "sgv") {
