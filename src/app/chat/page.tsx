@@ -9,28 +9,37 @@ import React, { useEffect, useState } from "react";
 export default function Chat() {
   let [chat, setChat] = useState([] as { role: string, content: string }[]);
 
+  useEffect(() => {
+    const scrollable = document.getElementById('chat');
+
+    if (!scrollable) return;
+
+    scrollable.scrollTop = scrollable.scrollHeight;
+  }, [chat]);
+
   const send = async () => {
     let message: any = document.getElementById("message");
 
     if (!message) return;
-    
-    let text = message.value
-    
+
+    let text = message.value;
+
+    if(text == "") return;
+
     let templateMessage = {
       role: "user",
       content: text
-    }
-    
-    setChat((prevChannels: any) => {
-      if (prevChannels.includes(templateMessage)) return prevChannels;
-      
-      return [...prevChannels, templateMessage]
-    });
-    
-    message.value = "";
-    let messageContext = chat;
+    };
 
-    messageContext.push(templateMessage)
+    // Atualize o chat imediatamente para exibir a mensagem do usuário
+    setChat((prevChannels: any) => {
+      return [...prevChannels, templateMessage, {role: "assistant", content: ""}];
+    });
+
+    message.value = "";
+
+    // Crie uma cópia do chat atualizado para enviar ao servidor
+    let messageContext = [...chat, templateMessage];
 
     let response = await fetch("/api", {
       method: "POST",
@@ -38,23 +47,21 @@ export default function Chat() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(messageContext)
-    })
+    });
 
     let data = await response.json();
-
-    console.log(data, message.value)
 
     let responseMessage = {
       role: "assistant",
       content: data.message
-    }
+    };
 
+    // Atualize o chat com a resposta do bot
     setChat((prevChannels: any) => {
-      if (prevChannels.includes(responseMessage)) return prevChannels;
-
-      return [...prevChannels, responseMessage]
+      const updateMessageBot = prevChannels.slice(0, -1);
+      return [...updateMessageBot, responseMessage];
     });
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-screen min-w-screen p-4 w-full h-auto">
@@ -95,7 +102,7 @@ export default function Chat() {
           </div>
           <div className="flex h-auto bg-gray-600 w-full m-4">
             <div className="flex flex-col flex-grow justify-between items-center h-full p-2">
-              <div className="flex-grow overflow-y-scroll w-full h-2">
+              <div className="flex-grow overflow-y-scroll w-full h-2" id="chat">
                 {
                   chat.map((messages: { role: string, content: string }, index: any) => (
                     <div key={index}>
@@ -111,8 +118,8 @@ export default function Chat() {
                 }
               </div>
               <div className="flex w-full flex-row justify-center m-2">
-                <input type="text" className="w-64 text-black pl-2 pr-2" id="message" onKeyDown={(e) => { if (e.key == "Enter") send()}} />
-                <button className="ml-2" id="send" onClick={send}>Enviar</button>
+                <input type="text" className="w-96 text-black p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-s-lg" id="message" autoComplete="off" onKeyDown={(e) => { if (e.key == "Enter") send() }} />
+                <button className="p-2 bg-green-500 hover:bg-green-700 rounded-e-lg" id="send" onClick={send}>Enviar</button>
               </div>
             </div>
           </div>

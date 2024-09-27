@@ -8,7 +8,13 @@ export const Bot: React.FC<MessageProps> = ({ children }) => {
     return (
         <div className="flex justify-start w-full">
             <div className="flex w-auto h-auto bg-gray-400 rounded-lg m-4 max-w-md text-black p-2">
-                {children}
+                {
+                    children ? (
+                        children
+                    ) : (
+                        <p className="animate-pulse">Carregando...</p>
+                    )
+                }
             </div>
         </div>
     );
