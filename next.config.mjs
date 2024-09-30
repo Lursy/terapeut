@@ -15,13 +15,10 @@ const connectToDatabase = async () => {
   await connectToDatabase();
 };
 
-// Execute a função de conexão ao banco de dados antes do Next.js iniciar
-if (process.env.NODE_ENV === 'development') {
-  connectToDatabase().then(() => {
-    console.log('Connected to MongoDB');
-  }).catch((err) => {
-    console.error('Failed to connect to MongoDB', err);
-  });
-}
+connectToDatabase().then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('Failed to connect to MongoDB', err);
+});
 
 export default nextConfig;

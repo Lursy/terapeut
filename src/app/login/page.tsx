@@ -1,4 +1,5 @@
 "use client"
+
 import { Header } from '@/components/client/Header';
 import { signIn, useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -7,9 +8,9 @@ const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const {data: session, status } = useSession();
+    const { data: session, status } = useSession();
 
-    if(status === "authenticated") return document.location.href = "/";
+    if (status === "authenticated") return document.location.href = "/";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -92,6 +93,18 @@ const SignIn = () => {
                                 >
                                     Entrar
                                 </button>
+                                <button
+                                    onClick={() => document.location.href = "/register"}
+                                    className="w-full bg-green-500 hover:bg-cyan-600 text-black font-semibold py-3 rounded-lg mt-6 transition duration-300"
+                                >
+                                    Registrar
+                                </button>
+                            <button
+                                onClick={() => document.location.href = "/"}
+                                className="w-full p-2 bg-gray-600 hover:bg-gray-400 text-black font-semibold py-3 rounded-lg mt-6 transition duration-300"
+                            >
+                                Voltar
+                            </button>
                             </form>
                         </div>
                     </div>

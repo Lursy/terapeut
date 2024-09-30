@@ -15,7 +15,7 @@ export default async function Home() {
             <Image src={brain} className="w-96" alt=""></Image>
           </div>
           <div className="flex absolute w-full h-full justify-center items-center">
-            <h1 className="animate-pulse font-black text-4xl">É importante cuidar de sí mesmo!</h1>
+            <h1 className="font-black text-4xl">É importante cuidar de sí mesmo!</h1>
           </div>
           {!session?(<div className="flex absolute w-full h-full justify-start items-end">
             <Anchor className="bg-blue-500 pl-6 pr-6 m-4 text-2xl" href="register">

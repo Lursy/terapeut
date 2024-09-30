@@ -11,9 +11,9 @@ interface FormData {
 }
 
 export default function Register() {
-    const {data: session, status } = useSession();
+    const { data: session, status } = useSession();
 
-    if(status === "authenticated") return document.location.href = "/";
+    if (status === "authenticated") return document.location.href = "/";
 
 
     const [formData, setFormData] = useState<FormData>({
@@ -25,13 +25,26 @@ export default function Register() {
 
     async function register(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        
+
+        if (formData.n_password !== formData.password) {
+            let n_pass = document.getElementById("n_pass");
+            let password = document.getElementById("password");
+
+            n_pass?.classList.remove("border-slate-600");
+            n_pass?.classList.add("border-[#FF0000]");
+
+            password?.classList.remove("border-slate-600");
+            password?.classList.add("border-[#FF0000]");
+
+            return
+        }
+
         let user = await fetch("/api/user/create", {
             method: "POST",
-            body: JSON.stringify({...formData})
+            body: JSON.stringify({ ...formData })
         })
 
-        if(user){
+        if (user) {
             window.location.href = "/"
         }
     }
@@ -100,7 +113,7 @@ export default function Register() {
                                 Confirme a Senha
                             </label>
                             <input
-                                id="n_password"
+                                id="n_pass"
                                 name="n_password" // Adicionei o atributo name
                                 type="password"
                                 value={formData.n_password}
@@ -116,6 +129,13 @@ export default function Register() {
                             className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold py-3 rounded-lg mt-6 transition duration-300"
                         >
                             Registrar
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => document.location.href = "/"}
+                            className="w-full p-2 bg-gray-600 hover:bg-gray-400 text-black font-semibold py-3 rounded-lg mt-6 transition duration-300"
+                        >
+                            Voltar
                         </button>
                     </form>
                 </div>
