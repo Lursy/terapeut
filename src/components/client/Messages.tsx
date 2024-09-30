@@ -12,7 +12,10 @@ export const Bot: React.FC<MessageProps> = ({ children }) => {
                     children ? (
                         children
                     ) : (
-                        <p className="animate-pulse">Carregando...</p>
+                        <div className="flex flex-row p-2">
+                            <div className="animate-pulse bg-gray-500 w-8 h-4"></div>
+                            <div className="animate-pulse bg-gray-500 w-24 h-4 ml-2"></div>
+                        </div>
                     )
                 }
             </div>

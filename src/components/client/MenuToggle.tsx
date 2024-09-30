@@ -6,7 +6,6 @@ export const MenuToggle = () => {
     useEffect(() => {
         window.onclick = function (event) {
             let drop = document.getElementById('navbar-dropdown');
-            let button = document.getElementById('buttonNav');
             let name = (event.target as any).tagName;
     
             if (drop && !drop.classList.contains("hidden")) {
@@ -19,8 +18,8 @@ export const MenuToggle = () => {
 
     return (
         <button id="buttonNav" onClick={ () => {
-            let items = document.getElementById("navbar-dropdown");
-            let is_hidden = items?.classList.contains("hidden");
+            const items = document.getElementById("navbar-dropdown");
+            const is_hidden = items?.classList.contains("hidden");
             
             if(is_hidden){
                 items?.classList.remove("hidden");
